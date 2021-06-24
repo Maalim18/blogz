@@ -56,12 +56,10 @@ def index():
 
     message= "Welcome to Blogs!!"
     title= 'Blog-app'
-    advertising = Blogs.query.filter_by(category = 'Technology').all()
-    interview= Blogs.query.filter_by(category = 'Politics').all()
-    production=Blogs.query.filter_by(category = 'Religion').all()
+    
 
 
-    return render_template('index.html', message=message,title=title,technology=technology,politics=politics,religion=religion)
+    return render_template('index.html', message=message,title=title)
 
 
 
