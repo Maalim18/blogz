@@ -1,0 +1,17 @@
+{% macro showBlog(blogs) %}
+<div class="pitch">
+  {% if piches %}
+  {% for blog in blogs %}
+  <h3 class="title">{{blog.title}}</h3>
+  <p>{{blog.post}}</p>
+  <p>Category: {{blog.category}}</p>
+  <p >posted on{{ blog.date.strftime('%Y-%m-%d') }}</p>
+  {{blog.comments.count()}} Comments<a href="{{url_for('main.comment',pitch_id = pitch.id)}}">Add Comment</a>
+    </div>
+  {% endfor %}
+  {% endif %}
+</div>
+
+{% endmacro %}
+
+  
