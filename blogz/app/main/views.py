@@ -21,6 +21,18 @@ def index():
 
     return render_template('index.html', message=message,title=title)
 
+@main.route('/blogs')
+def blog():
+
+    message= "Welcome to blog Application!!"
+    title= 'Blog app'
+    new_blog = Blog.query.all()
+    for blog in new_blog:
+     blog=blog
+     
+     return render_template('blog.html', message=message,title=title,blog=blog)
+  
+
 
 
 @main.route('/blog/', methods = ['GET','POST'])
@@ -31,12 +43,13 @@ def new_blog():
 
    if blog_form.validate_on_submit():
         
-        blog= form.blog.data
-        title=form.title.data
+        blog= blog_form.blog.data
+        title=blog_form.title.data
 
         # Updated pitchinstance
         new_blog = Blogs(title=title,blog= blog)
         db.session.add(new_blog)
+        db.session.commit()
 
 
         title='New Blog'
