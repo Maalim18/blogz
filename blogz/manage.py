@@ -5,7 +5,7 @@ from flask_script import Manager,Server
 
 
 # app = create_app('development')
-app = create_app('production')
+app = create_app('development')
 
 
 manager = Manager(app)

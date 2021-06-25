@@ -42,3 +42,47 @@ class User(UserMixin,db.Model):
     def __repr__(self):
         return f'User {self.username}'
 
+class Blogs(db.Model):
+    __tablename__= 'blogs'
+    id = db.Column(db.Integer,primary_key = True)
+    title = db.Column(db.String(255))
+    
+    blog = db.Column(db.String(255))
+    date = db.Column(db.DateTime(250), default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    comments = db.relationship('Comments', backref='title', lazy='dynamic')
+
+    def save_blog(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_blogs(cls):
+        # blog= Blogs.query.filter_by(id=id).all()
+        return blog
+
+    def __repr__(self):
+        return f"Blogs {self.blog}','{self.date}')"        
+
+
+class Comments(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.String(255))
+    date_posted = db.Column(db.DateTime(250), default=datetime.utcnow)
+    blogs_id = db.Column(db.Integer, db.ForeignKey("blogs.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_comment(cls,id):
+        comments = Comments.query.filter_by(blogs_id=id).all()
+        return comments
+
+    def __repr__(self):
+        return f"Comments('{self.comment}', '{self.date_posted}')"        
+

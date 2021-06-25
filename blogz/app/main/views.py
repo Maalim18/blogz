@@ -1,9 +1,78 @@
 from flask_login import login_required,current_user
 from flask import render_template,request,redirect,url_for,abort
-from ..models import  User,Blogs
-from .forms import PitchForm,CommentForm,UpdateProfile
+from ..models import  User,Blogs,Comments
+from .forms import BlogForm,CommentForm,UpdateProfile
 from .. import db, photos
 from . import main
+
+
+
+
+ 
+
+@main.route('/')
+def index():
+
+    message= "Welcome to Blogs!!"
+    title= 'Blog-app'
+    # blogs=Blogs.get_blogs()
+    
+
+
+    return render_template('index.html', message=message,title=title)
+
+
+
+@main.route('/blog/', methods = ['GET','POST'])
+# @login_required
+def new_blog():
+
+   blog_form = BlogForm()
+
+   if blog_form.validate_on_submit():
+        
+        blog= form.blog.data
+        title=form.title.data
+
+        # Updated pitchinstance
+        new_blog = Blogs(title=title,blog= blog)
+        db.session.add(new_blog)
+
+
+        title='New Blog'
+
+        new_blog.save_blog()
+
+        return redirect(url_for('main.index'))
+
+   
+   return render_template('blog.html',blog_form= blog_form)
+
+
+@main.route('/categories/<cate>')
+def category(cate):
+    '''
+    function to return the pitches by category
+    '''
+    category = blogs.get_blogs(cate)
+    # print(category)
+    title = f'{cate}'
+    return render_template('categories.html',title = title, category = category)
+
+@main.route('/comment/<int:pitch_id>', methods = ['POST','GET'])
+@login_required
+def comment(blog_id):
+    form = CommentForm()
+    pitch = Pitch.query.get(blog_id)
+    all_comments = Comment.query.filter_by(blog_id = blog_id).all()
+    if form.validate_on_submit():
+        comment = form.comment.data
+        blog_id = blog_id
+        user_id = current_user._get_current_object().id
+        new_comment = Comment(comment = comment,user_id = user_id,blog_id = blog_id)
+        new_comment.save_c()
+        return redirect(url_for('.comment', blog_id = pitch_id))
+    return render_template('comment.html', form =form, blog= blog,all_comments=all_comments)
 
 
 
@@ -50,63 +119,4 @@ def update_profile(uname):
 
     return render_template('profile/update.html',form =form)
  
-
-@main.route('/')
-def index():
-
-    message= "Welcome to Blogs!!"
-    title= 'Blog-app'
-    
-
-
-    return render_template('index.html', message=message,title=title)
-
-
-
-@main.route('/blog/', methods = ['GET','POST'])
-@login_required
-def new_blog():
-
-    form = BlogForm()
-
-    if form.validate_on_submit():
-        category = form.category.data
-        blog= form.blog.data
-        title=form.title.data
-
-        # Updated pitchinstance
-        new_blog = blogs(title=title,category= category,blog= blog,user_id=current_user.id)
-
-        title='New Blog'
-
-        new_pitch.save_pitch()
-
-        return redirect(url_for('main.index'))
-
-    return render_template('blog.html',form= form)
-
-
-@main.route('/categories/<cate>')
-def category(cate):
-    '''
-    function to return the pitches by category
-    '''
-    category = blogs.get_blogs(cate)
-    # print(category)
-    title = f'{cate}'
-    return render_template('categories.html',title = title, category = category)
-
-@main.route('/comment/<int:pitch_id>', methods = ['POST','GET'])
-@login_required
-def comment(blog_id):
-    form = CommentForm()
-    pitch = Pitch.query.get(blog_id)
-    all_comments = Comment.query.filter_by(blog_id = blog_id).all()
-    if form.validate_on_submit():
-        comment = form.comment.data
-        blog_id = blog_id
-        user_id = current_user._get_current_object().id
-        new_comment = Comment(comment = comment,user_id = user_id,blog_id = blog_id)
-        new_comment.save_c()
-        return redirect(url_for('.comment', blog_id = pitch_id))
-    return render_template('comment.html', form =form, blog= blog,all_comments=all_comments)
+   
